@@ -49,19 +49,19 @@
     }
     .heartImg:hover{ transform: translateY(-2px) scale(1.03) rotate(-1deg); }
 
-    /* Presents group (shorter) */
+    /* Presents group (desktop/base) */
     .presents{
       align-self: center;
       display:flex; justify-content:center; align-items:flex-end;
-      height: min(48svh, 52vh); /* shorter group */
+      height: min(56svh, 60vh);
       gap: 1.2vh;
       padding-inline: clamp(8px, 2vw, 24px);
       width: 100%;
     }
     .present{ position:relative; display:flex; flex-direction:column; align-items:center; }
-    .present.pink   { width: 34vh; height: 26vh; z-index:10; }
-    .present.yellow { width: 38vh; height: 34vh; z-index: 0; cursor:pointer; }
-    .present.purple { width: 31vh; height: 23vh; z-index: 1; }
+    .present.pink   { width: 36vh; height: 30vh; z-index:10; }
+    .present.yellow { width: 42vh; height: 44vh; z-index: 0; cursor:pointer; }
+    .present.purple { width: 33vh; height: 26vh; z-index: 1; }
     .present.pink   { margin-right: -1.2vh; }
     .present.purple { margin-left:  -1.2vh; }
 
@@ -132,18 +132,32 @@
     .present.pink:hover, .present.yellow:hover, .present.purple:hover{ animation: wiggle .5s; }
     @keyframes wiggle{ 0%{transform:translateZ(0)} 30%{transform:scale(1.04,.94)} 60%{transform:scale(.95,1.05)} 100%{transform:translateZ(0)} }
 
-    /* Center CTA */
+    /* CTA with gold glow */
     .cta-center{
-      position:absolute; left:50%; top:38%;            /* lowered for shorter box */
+      position:absolute; left:50%; top:42%;
       transform: translate(-50%, -50%);
       background: transparent; border:0;
       color:#6C284D; font-weight:700;
-      text-shadow: 2px 2px var(--border-color), 0 0 10px rgba(255,181,192,.35);
+      text-shadow:
+        2px 2px var(--border-color),
+        0 0 12px rgba(255,181,192,.35);
       font-family: 'Dancing Script', cursive;
       font-size: 32px; line-height:1;
       white-space: nowrap;
       padding: 0 .3em; cursor: pointer; z-index: 2;
       transition: transform .18s ease;
+    }
+    /* golden under-glow “halo” */
+    .cta-center::after{
+      content:"";
+      position:absolute; left:50%; top:100%;
+      transform: translate(-50%, -40%);
+      width: 170px; height: 36px; pointer-events:none;
+      background: radial-gradient(ellipse at center,
+                  rgba(255,209,102,.85) 0%,
+                  rgba(255,209,102,.45) 45%,
+                  rgba(255,209,102,0) 70%);
+      filter: blur(6px);
     }
     .cta-center:hover,.cta-center:focus-visible{
       transform: translate(-50%, -50%) scale(1.08); outline:none;
@@ -191,22 +205,36 @@
       100% { opacity:0; transform: translate(-50%,-110%) scale(1); }
     }
 
-    /* MOBILE tweaks: move title down a bit more */
+    /* ====== MOBILE TUNING ======
+       Make presents shorter & wider so they match what you liked.
+    */
     @media (max-width: 480px) {
-      .headline { margin-top: 12vh; }
-      .presents { height: 46svh; }
-      .text { font-size: clamp(2.2rem, 8vw, 3.2rem); }
-      .cta-center { top: 36%; font-size: 26px; }
+      .headline { margin-top: 10svh; }
+      .text { font-size: clamp(2.2rem, 7.6vw, 3.2rem); }
+
+      .presents { height: 46svh; gap: 1svh; }
+      /* use vw for width, smaller vh for height ⇒ stout boxes */
+      .present.pink   { width: 34vw; height: 18vh; }
+      .present.yellow { width: 44vw; height: 20vh; } /* center shorter */
+      .present.purple { width: 30vw; height: 16vh; }
+
+      /* keep the CTA positioned nicely on the shorter box */
+      .cta-center { top: 38%; font-size: 28px; }
+      .cta-center::after{ width: 150px; height: 32px; }
     }
+
     @media (max-width: 360px) {
-      .headline { margin-top: 14vh; }
-      .text { font-size: clamp(2rem, 7.5vw, 3rem); }
+      .headline { margin-top: 12svh; }
       .presents { height: 44svh; }
-      .cta-center { top: 35%; font-size: 24px; }
+      .present.pink   { width: 35vw; height: 17vh; }
+      .present.yellow { width: 46vw; height: 19vh; }
+      .present.purple { width: 31vw; height: 15vh; }
+      .cta-center { top: 37%; font-size: 26px; }
     }
+
     @supports (padding: max(0px)) {
       @media (max-width: 480px) {
-        .headline { margin-top: calc(12vh + env(safe-area-inset-top)); }
+        .headline { margin-top: calc(10svh + env(safe-area-inset-top)); }
       }
     }
   </style>
@@ -244,7 +272,7 @@
   <div id="cardOverlay" class="card-overlay is-hidden" role="dialog" aria-modal="true">
     <div class="card">
       <button class="card__close" title="Close">&times;</button>
-      <h2 class="card__title" id="cardTitle">HAPPY BIRTHDAY LAMA!🎉❤️</h2>
+      <h2 class="card__title" id="cardTitle">A Birthday Note 🎉</h2>
       <div class="card__body" id="cardBody"></div>
     </div>
   </div>
@@ -278,14 +306,14 @@
 
       const message = {
         title: "HAPPY BIRTHDAY LAMA!🎉❤️",
-        body: `Happy birthday to someone who truly makes the world a brighter place. Your kindness, your creativity, and the way you make every moment feel fun are just a few of the things we love about you.
+        body:
+`Happy birthday to someone who truly makes the world a brighter place. Your kindness, your creativity, and the way you make every moment feel fun are just a few of the things we love about you.
 We’re so grateful for you, and we probably don’t say that enough.
 We can’t wait to see all the wonderful things this next year has in store for you. May it be filled with everything that makes you smile, growth that excites you, and dreams that feel a little closer everyday. Here’s to more of everything we love: the late night laughs, the spontaneous adventure, and the memories we’ll hold onto forever.
-Have the most amazing day today and everyday. You absolutely deserve it.
+Have the most amazing day today and everyday. you absolutely deserve it.
 Love you always❤️  - Shahad & Alaa`
       };
 
-      // Open card by clicking the center present or its CTA
       const center = document.querySelector('.present.yellow[data-card="main"]');
       const cta = center.querySelector('.cta-center');
       function openCard(e){
