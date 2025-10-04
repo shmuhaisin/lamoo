@@ -21,7 +21,7 @@
       overflow: hidden; /* no scroll */
     }
 
-    /* Layout */
+    /* Layout shell */
     .container{
       position: fixed; inset: 0;
       display: flex; flex-direction: column;
@@ -49,7 +49,7 @@
     }
     .heartImg:hover{ transform: translateY(-2px) scale(1.03) rotate(-1deg); }
 
-    /* Presents group (desktop/base) */
+    /* Presents group */
     .presents{
       align-self: center;
       display:flex; justify-content:center; align-items:flex-end;
@@ -102,7 +102,7 @@
     .present .bow::before{ left:1.9vh; }
     .present .bow::after { right:1.9vh; }
 
-    /* Original ribbon colors */
+    /* Ribbon colors */
     .present.pink .ribbon,
     .present.pink .bow,
     .present.pink .bow::before,
@@ -132,7 +132,7 @@
     .present.pink:hover, .present.yellow:hover, .present.purple:hover{ animation: wiggle .5s; }
     @keyframes wiggle{ 0%{transform:translateZ(0)} 30%{transform:scale(1.04,.94)} 60%{transform:scale(.95,1.05)} 100%{transform:translateZ(0)} }
 
-    /* CTA with **gold text glow** (no under-bar) */
+    /* CTA — clean text, NO glow */
     .cta-center{
       position:absolute; left:50%; top:42%;
       transform: translate(-50%, -50%);
@@ -144,12 +144,8 @@
       padding: 0 .3em; cursor: pointer; z-index: 2;
       transition: transform .18s ease;
 
-      /* soft golden glow around letters */
-      text-shadow:
-        0 0 10px rgba(255,215,0,.75),
-        0 0 18px rgba(255,215,0,.55),
-        0 0 28px rgba(255,215,0,.35),
-        2px 2px var(--border-color);
+      /* clean (kept only subtle border-color drop) */
+      text-shadow: 2px 2px var(--border-color);
     }
     .cta-center:hover,.cta-center:focus-visible{
       transform: translate(-50%, -50%) scale(1.08); outline:none;
@@ -180,7 +176,7 @@
     .card__body{ font-size: 18px; line-height: 1.65; font-weight: bolder; white-space: pre-wrap; }
     .is-hidden { display: none !important; }
 
-    /* Fireworks '21' */
+    /* Fireworks "21" */
     .pop-number{
       position: fixed; left: 0; top: 0; transform: translate(-50%, -50%);
       pointer-events: none; z-index: 9998;
@@ -197,10 +193,9 @@
       100% { opacity:0; transform: translate(-50%,-110%) scale(1); }
     }
 
-    /* ====== MOBILE TUNING ====== */
-    /* Move title DOWN more on phones, and keep gifts stout/wide */
+    /* ====== MOBILE TUNING (title lower, shorter presents) ====== */
     @media (max-width: 480px) {
-      .headline { margin-top: 18svh; }                 /* moved further down */
+      .headline { margin-top: 24svh; }                 /* moved DOWN */
       .text { font-size: clamp(2.2rem, 7.6vw, 3.2rem); }
 
       .presents { height: 46svh; gap: 1svh; }
@@ -210,19 +205,18 @@
 
       .cta-center { top: 38%; font-size: 28px; }
     }
-
     @media (max-width: 360px) {
-      .headline { margin-top: 22svh; }                 /* even lower on tiny phones */
+      .headline { margin-top: 28svh; }                 /* even lower on tiny phones */
+      .text { font-size: clamp(2rem, 7.5vw, 3rem); }
       .presents { height: 44svh; }
       .present.pink   { width: 35vw; height: 17vh; }
       .present.yellow { width: 46vw; height: 19vh; }
       .present.purple { width: 31vw; height: 15vh; }
       .cta-center { top: 37%; font-size: 26px; }
     }
-
     @supports (padding: max(0px)) {
       @media (max-width: 480px) {
-        .headline { margin-top: calc(18svh + env(safe-area-inset-top)); }
+        .headline { margin-top: calc(24svh + env(safe-area-inset-top)); }
       }
     }
   </style>
@@ -294,14 +288,15 @@
 
       const message = {
         title: "HAPPY BIRTHDAY LAMA!🎉❤️",
-        body:
-`Happy birthday to someone who truly makes the world a brighter place. Your kindness, your creativity, and the way you make every moment feel fun are just a few of the things we love about you.
+        body: `Happy birthday to someone who truly makes the world a brighter place. Your kindness, your creativity, and the way you make every moment feel fun are just a few of the things we love about you.
 We’re so grateful for you, and we probably don’t say that enough.
 We can’t wait to see all the wonderful things this next year has in store for you. May it be filled with everything that makes you smile, growth that excites you, and dreams that feel a little closer everyday. Here’s to more of everything we love: the late night laughs, the spontaneous adventure, and the memories we’ll hold onto forever.
-Have the most amazing day today and everyday. you absolutely deserve it.
-Love you always❤️  - Shahad & Alaa`
+Have the most amazing day today and everyday—you absolutely deserve it.
+Love you always ❤️
+- Shahad & Alaa`
       };
 
+      // Open card by clicking the center present or its CTA
       const center = document.querySelector('.present.yellow[data-card="main"]');
       const cta = center.querySelector('.cta-center');
       function openCard(e){
@@ -319,25 +314,21 @@ Love you always❤️  - Shahad & Alaa`
         if (!e.target.closest('.card')) overlay.classList.add('is-hidden');
       });
 
-      /* ===== Fireworks: stronger & a bit more frequent ===== */
+      // Fireworks — slightly denser
       function bursty(x, y) {
         if (!window.mojs) return;
         new mojs.Burst({
           left: 0, top: 0,
-          radius: { 0: 240 },         // bigger
-          count: 36,                   // more particles
-          degree: 360,
-          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2200 }
+          radius: { 0: 220 }, count: 28, degree: 360,
+          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2000 }
         }).tune({ x, y }).replay();
       }
       function randomizedConfetti(x, y) {
         if (!window.mojs) return;
         new mojs.Burst({
           left: 0, top: 0,
-          radius: { 0: 240 },
-          count: 36,
-          degree: 360,
-          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2200 }
+          radius: { 0: 220 }, count: 28, degree: 360,
+          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2000 }
         }).tune({ x, y }).replay();
       }
 
@@ -349,7 +340,7 @@ Love you always❤️  - Shahad & Alaa`
         showNumber(e.pageX, e.pageY);
       });
 
-      // Random bursts + small "21" (more often now)
+      // Random bursts + small "21"
       setInterval(() => {
         if (!overlay.classList.contains('is-hidden')) return;
         const margin = 50;
@@ -357,7 +348,7 @@ Love you always❤️  - Shahad & Alaa`
         const y = Math.floor(Math.random() * (window.innerHeight - margin * 2)) + margin;
         randomizedConfetti(x, y);
         showNumber(x, y, true);
-      }, 500); // was 700ms
+      }, 650);
 
       function showNumber(x, y, small = false) {
         const el = document.createElement('span');
