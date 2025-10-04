@@ -132,32 +132,24 @@
     .present.pink:hover, .present.yellow:hover, .present.purple:hover{ animation: wiggle .5s; }
     @keyframes wiggle{ 0%{transform:translateZ(0)} 30%{transform:scale(1.04,.94)} 60%{transform:scale(.95,1.05)} 100%{transform:translateZ(0)} }
 
-    /* CTA with gold glow */
+    /* CTA with **gold text glow** (no under-bar) */
     .cta-center{
       position:absolute; left:50%; top:42%;
       transform: translate(-50%, -50%);
       background: transparent; border:0;
       color:#6C284D; font-weight:700;
-      text-shadow:
-        2px 2px var(--border-color),
-        0 0 12px rgba(255,181,192,.35);
       font-family: 'Dancing Script', cursive;
       font-size: 32px; line-height:1;
       white-space: nowrap;
       padding: 0 .3em; cursor: pointer; z-index: 2;
       transition: transform .18s ease;
-    }
-    /* golden under-glow “halo” */
-    .cta-center::after{
-      content:"";
-      position:absolute; left:50%; top:100%;
-      transform: translate(-50%, -40%);
-      width: 170px; height: 36px; pointer-events:none;
-      background: radial-gradient(ellipse at center,
-                  rgba(255,209,102,.85) 0%,
-                  rgba(255,209,102,.45) 45%,
-                  rgba(255,209,102,0) 70%);
-      filter: blur(6px);
+
+      /* soft golden glow around letters */
+      text-shadow:
+        0 0 10px rgba(255,215,0,.75),
+        0 0 18px rgba(255,215,0,.55),
+        0 0 28px rgba(255,215,0,.35),
+        2px 2px var(--border-color);
     }
     .cta-center:hover,.cta-center:focus-visible{
       transform: translate(-50%, -50%) scale(1.08); outline:none;
@@ -205,26 +197,22 @@
       100% { opacity:0; transform: translate(-50%,-110%) scale(1); }
     }
 
-    /* ====== MOBILE TUNING ======
-       Make presents shorter & wider so they match what you liked.
-    */
+    /* ====== MOBILE TUNING ====== */
+    /* Move title DOWN more on phones, and keep gifts stout/wide */
     @media (max-width: 480px) {
-      .headline { margin-top: 10svh; }
+      .headline { margin-top: 18svh; }                 /* moved further down */
       .text { font-size: clamp(2.2rem, 7.6vw, 3.2rem); }
 
       .presents { height: 46svh; gap: 1svh; }
-      /* use vw for width, smaller vh for height ⇒ stout boxes */
       .present.pink   { width: 34vw; height: 18vh; }
-      .present.yellow { width: 44vw; height: 20vh; } /* center shorter */
+      .present.yellow { width: 44vw; height: 20vh; }
       .present.purple { width: 30vw; height: 16vh; }
 
-      /* keep the CTA positioned nicely on the shorter box */
       .cta-center { top: 38%; font-size: 28px; }
-      .cta-center::after{ width: 150px; height: 32px; }
     }
 
     @media (max-width: 360px) {
-      .headline { margin-top: 12svh; }
+      .headline { margin-top: 22svh; }                 /* even lower on tiny phones */
       .presents { height: 44svh; }
       .present.pink   { width: 35vw; height: 17vh; }
       .present.yellow { width: 46vw; height: 19vh; }
@@ -234,7 +222,7 @@
 
     @supports (padding: max(0px)) {
       @media (max-width: 480px) {
-        .headline { margin-top: calc(10svh + env(safe-area-inset-top)); }
+        .headline { margin-top: calc(18svh + env(safe-area-inset-top)); }
       }
     }
   </style>
@@ -331,21 +319,25 @@ Love you always❤️  - Shahad & Alaa`
         if (!e.target.closest('.card')) overlay.classList.add('is-hidden');
       });
 
-      // Fireworks colors: plum -> baby pink
+      /* ===== Fireworks: stronger & a bit more frequent ===== */
       function bursty(x, y) {
         if (!window.mojs) return;
         new mojs.Burst({
           left: 0, top: 0,
-          radius: { 0: 200 }, count: 24, degree: 360,
-          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2000 }
+          radius: { 0: 240 },         // bigger
+          count: 36,                   // more particles
+          degree: 360,
+          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2200 }
         }).tune({ x, y }).replay();
       }
       function randomizedConfetti(x, y) {
         if (!window.mojs) return;
         new mojs.Burst({
           left: 0, top: 0,
-          radius: { 0: 200 }, count: 24, degree: 360,
-          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2000 }
+          radius: { 0: 240 },
+          count: 36,
+          degree: 360,
+          children: { fill: { '#6C284D': '#FFB5C0' }, duration: 2200 }
         }).tune({ x, y }).replay();
       }
 
@@ -357,7 +349,7 @@ Love you always❤️  - Shahad & Alaa`
         showNumber(e.pageX, e.pageY);
       });
 
-      // Random bursts + small "21"
+      // Random bursts + small "21" (more often now)
       setInterval(() => {
         if (!overlay.classList.contains('is-hidden')) return;
         const margin = 50;
@@ -365,7 +357,7 @@ Love you always❤️  - Shahad & Alaa`
         const y = Math.floor(Math.random() * (window.innerHeight - margin * 2)) + margin;
         randomizedConfetti(x, y);
         showNumber(x, y, true);
-      }, 700);
+      }, 500); // was 700ms
 
       function showNumber(x, y, small = false) {
         const el = document.createElement('span');
